@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Cliente,Proyecto,Tecnologia
+from .forms import ProyectoForm
 
 # Create your views here.
 
@@ -14,5 +15,14 @@ def home_view(request):
     #render() toma la peticion, y envia los datos en este caso contexto para que se puedan ver.
     return render(request,'home.html',contexto)
 
-def crear_cliente(request):
-    return render (request,'clientes')
+def crear_proyecto_view(request):
+    if request.method == 'POST':
+        formulario = ProyectoForm(request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect('home')
+    else:
+        formulario = ProyectoForm()
+    
+    contexto = {'form':formulario}
+    return render(request,'crear_proyecto.html',contexto)
